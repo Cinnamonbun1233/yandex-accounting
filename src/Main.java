@@ -6,7 +6,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         ReportManager reportManager = new ReportManager();
-        System.out.println("Добро пожаловать!");
+        System.out.println("Добро пожаловать.");
 
         while (true) {
 
@@ -20,21 +20,21 @@ public class Main {
                 case 4 -> reportManager.printMonthlyReport();
                 case 5 -> reportManager.printStaticYearReport();
                 case 0 -> {
-                    System.out.println("До свидания!");
+                    System.out.println("До свидания.");
                     return;
                 }
-                default -> System.out.println("Такой команды не существует. Пожалуйста, выберите команду из списка");
+                default -> System.out.println("Ошибка, такой команды не существует.");
             }
         }
     }
 
     public static void printMenu() {
         System.out.println("Что Вы хотите сделать:");
-        System.out.println("1 - Считать все месячные отчёты");
-        System.out.println("2 - Считать годовой отчёт");
-        System.out.println("3 - Сверить отчёты");
-        System.out.println("4 - Вывести информацию о всех месячных отчётах");
-        System.out.println("5 - Вывести информацию о годовом отчёте");
-        System.out.println("0 - Выход из программы");
+        System.out.println("1 - Считать все месячные отчёты;");
+        System.out.println("2 - Считать годовой отчёт;");
+        System.out.println("3 - Сверить отчёты;");
+        System.out.println("4 - Вывести информацию о всех месячных отчётах;");
+        System.out.println("5 - Вывести информацию о годовом отчёте;");
+        System.out.println("0 - Выход из программы.");
     }
 }

@@ -14,6 +14,7 @@ public class ReportManager {
     }
 
     public void readMonthlyReports() {
+        System.out.println("Обработка месячных отчётов запущена.");
         for (int monthNumber = 1; monthNumber < 4; monthNumber++) {
             String path = "resources/m.20210" + monthNumber + ".csv";
             String content = readFileContentsOrNull(path);
@@ -33,12 +34,13 @@ public class ReportManager {
                     months.dataInMonth.add(months.dataInMonthLine);
                 }
             }
-            System.out.println("Месяц: " + monthNumber + " - отчёт обработан!");
+            System.out.println("Месяц: " + monthNumber + ". Отчёт обработан.");
             months.mapOfMonths.put(monthNumber, months.dataInMonth);
         }
     }
 
     public void readYearReport() {
+        System.out.println("Обработка годового отчёта запущена.");
         String content = readFileContentsOrNull("resources/y.2021.csv");
         if (!(content == null)) {
             String[] lines = content.split("\r?\n");
@@ -54,9 +56,9 @@ public class ReportManager {
                 year.dataInYear.add(year.dataInYearLine);
             }
             setExpensesAndIncomePerYear();
-            System.out.println("Год: 2021 - отчёт обработан!");
+            System.out.println("Год: 2021. Отчёт обработан.");
         } else {
-            System.out.println("Возникла ошибка, файл не прочитан");
+            System.out.println("Ошибка, файл не прочитан.");
         }
     }
 
@@ -88,6 +90,7 @@ public class ReportManager {
     }
 
     public void printMonthlyReport() {
+        System.out.println("Печать месячных отчётов запущена.");
         try {
             double maxIncome = 0;
             double maxExpense = 0;
@@ -95,7 +98,7 @@ public class ReportManager {
             String nameExpenseTitle = null;
             String nameIncomeTitle = null;
             for (Integer monthNumber : months.mapOfMonths.keySet()) {
-                System.out.println("Отчёт за месяц №" + monthNumber + ":");
+                System.out.println("Месяц: " + monthNumber + ":");
                 for (DataInMonthLine value : months.mapOfMonths.get(monthNumber)) {
                     maxExpenseProduct = value.price * value.quantity;
                     if (maxExpenseProduct > maxExpense && value.isExpense) {
@@ -106,31 +109,30 @@ public class ReportManager {
                         nameIncomeTitle = value.title;
                     }
                 }
-                System.out.println("Наибольший доход: " + maxIncome + " руб. Название строки: " + nameIncomeTitle);
-                System.out.println("Наибольшая трата: " + maxExpense + " руб. Название строки: " + nameExpenseTitle);
+                System.out.println("Наибольший доход: " + maxIncome + " руб. Название строки: " + nameIncomeTitle +
+                        ".");
+                System.out.println("Наибольшая трата: " + maxExpense + " руб. Название строки: " + nameExpenseTitle + ".");
                 maxIncome = 0;
                 maxExpense = 0;
                 nameExpenseTitle = null;
                 nameIncomeTitle = null;
             }
         } catch (NullPointerException exception) {
-            System.out.println("Не получается вывести статистику по месячным отчётам. Попробуйте прочитать файлы ещё " +
-                    "раз");
+            System.out.println("Ошибка, не получается вывести месячные отчёты.");
         }
     }
 
     public void printStaticYearReport() {
+        System.out.println("Печать годового отчёта запущена.");
         try {
             yearProfit();
             averageExpensesAndIncomeForYear();
         } catch (NullPointerException exception) {
-            System.out.println("Не получается вывести статистику по годовому отчёту. Попробуйте прочитать файл ещё " +
-                    "раз");
+            System.out.println("Ошибка, не получается вывести статистику по годовому отчёту.");
         }
     }
 
     public void yearProfit() {
-        System.out.println("Данные за 2021 год:");
         for (int monthNumber = 1; monthNumber < 4; monthNumber++) {
             double profit = year.incomesPerMonth.get(monthNumber).amount - year.expensesPerMonth.get(monthNumber).amount;
             year.profitPerMonth.put(monthNumber, profit);
@@ -149,28 +151,29 @@ public class ReportManager {
             sumExpenses += year.expensesPerMonth.get(monthNumber).amount;
             sumIncome += year.incomesPerMonth.get(monthNumber).amount;
         }
-        System.out.println("В среднем за все месяцы в 2021 году получен расход: " + sumExpenses / monthCount + " руб!");
-        System.out.println("В среднем за все месяцы в 2021 году получен доход: " + sumIncome / monthCount + " руб!");
+        System.out.println("Средний расход за все месяца 2021 года: " + sumExpenses / monthCount + " руб.");
+        System.out.println("Средний доход за все месяца 2021 года: " + sumIncome / monthCount + " руб.");
     }
 
     public void compareReports() {
         getExpensesAndIncomePerMonth();
+        System.out.println("Запущена сверка месячных и годового отчёта.");
         try {
             for (int monthNumber = 1; monthNumber < 4; monthNumber++) {
                 if (months.expensesPerMonth.get(monthNumber) == year.expensesPerMonth.get(monthNumber).amount) {
-                    System.out.println("Сверка расходов в " + monthNumber + " месяце успешно завершена");
+                    System.out.println("Месяц: " + monthNumber + ". Сверка расходов успешно завершена.");
                 } else {
-                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в расходах!");
+                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в расходах.");
                 }
                 if (months.incomesPerMonth.get(monthNumber) == year.incomesPerMonth.get(monthNumber).amount) {
-                    System.out.println("Сверка доходов в " + monthNumber + " месяце успешно завершена");
+                    System.out.println("Месяц: " + monthNumber + ". Сверка доходов успешно завершена.");
                 } else {
-                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в доходах!");
+                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в доходах.");
                 }
             }
         } catch (NullPointerException exception) {
-            System.out.println("Невозможно сравнить файлы с отчётами. Возможно, файлы еще не считаны! \n" +
-                    "Используя меню считайте файлы еще раз!");
+            System.out.println("Ошибка, ещё не считаны все мясячные или годовой отчёт. Считайте их и попробуйте " +
+                    "сделать сверку ещё раз.");
         }
     }
 
@@ -178,8 +181,7 @@ public class ReportManager {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с месячным отчётом. Возможно, файл не находится в нужной " +
-                    "директории.");
+            System.out.println("Ошибка, не полуается прочить файл. Возможно указана неверная директория.");
             return null;
         }
     }
