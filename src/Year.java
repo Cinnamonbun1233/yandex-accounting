@@ -3,9 +3,9 @@ import java.util.HashMap;
 
 public class Year {
 
-    DataInYearLine dataInYearLine;
-    ArrayList<DataInYearLine> dataInYear = new ArrayList<>();
+    YearLine yearLine;
+    ArrayList<YearLine> dataInYear = new ArrayList<>();
     HashMap<Integer, Double> profitPerMonth = new HashMap<>();
-    HashMap<Integer, DataInYearLine> expensesPerMonth = new HashMap<>();
-    HashMap<Integer, DataInYearLine> incomesPerMonth = new HashMap<>();
+    HashMap<Integer, YearLine> expensesPerMonth = new HashMap<>();
+    HashMap<Integer, YearLine> incomesPerMonth = new HashMap<>();
 }

@@ -18,7 +18,7 @@ public class Main {
                 case 2 -> reportManager.readYearReport();
                 case 3 -> reportManager.compareReports();
                 case 4 -> reportManager.printMonthlyReport();
-                case 5 -> reportManager.printStaticYearReport();
+                case 5 -> reportManager.printYearReport();
                 case 0 -> {
                     System.out.println("До свидания.");
                     return;

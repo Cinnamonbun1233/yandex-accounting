@@ -30,8 +30,8 @@ public class ReportManager {
                     int quantity = Integer.parseInt(partOfLine[2]);
                     int price = Integer.parseInt(partOfLine[3]);
 
-                    months.dataInMonthLine = new DataInMonthLine(title, isExpense, quantity, price);
-                    months.dataInMonth.add(months.dataInMonthLine);
+                    months.monthLine = new MonthLine(title, isExpense, quantity, price);
+                    months.dataInMonth.add(months.monthLine);
                 }
             }
             System.out.println("Месяц: " + monthNumber + ". Отчёт обработан.");
@@ -52,8 +52,8 @@ public class ReportManager {
                 int amount = Integer.parseInt(partOfLine[1]);
                 boolean isExpense = Boolean.parseBoolean(partOfLine[2]);
 
-                year.dataInYearLine = new DataInYearLine(month, amount, isExpense);
-                year.dataInYear.add(year.dataInYearLine);
+                year.yearLine = new YearLine(month, amount, isExpense);
+                year.dataInYear.add(year.yearLine);
             }
             setExpensesAndIncomePerYear();
             System.out.println("Год: 2021. Отчёт обработан.");
@@ -62,30 +62,25 @@ public class ReportManager {
         }
     }
 
-    public void setExpensesAndIncomePerYear() {
-        for (DataInYearLine months : year.dataInYear) {
-            int index = months.month;
-            if (months.isExpense) {
-                year.expensesPerMonth.put(index, months);
-            } else {
-                year.incomesPerMonth.put(index, months);
-            }
-        }
-    }
-
-    public void getExpensesAndIncomePerMonth() {
-        for (Integer monthNumber : months.mapOfMonths.keySet()) {
-            int expense = 0;
-            int income = 0;
-            for (DataInMonthLine expenses : months.mapOfMonths.get(monthNumber)) {
-                if (expenses.isExpense) {
-                    expense += expenses.quantity * expenses.price;
+    public void compareReports() {
+        getExpensesAndIncomePerMonth();
+        System.out.println("Запущена сверка месячных и годового отчёта.");
+        try {
+            for (int monthNumber = 1; monthNumber < 4; monthNumber++) {
+                if (months.expensesPerMonth.get(monthNumber) == year.expensesPerMonth.get(monthNumber).amount) {
+                    System.out.println("Месяц: " + monthNumber + ". Сверка расходов успешно завершена.");
                 } else {
-                    income += expenses.quantity * expenses.price;
+                    System.out.println("Месяц: " + monthNumber + ". Сверка расходов завершена с ошибкой.");
+                }
+                if (months.incomesPerMonth.get(monthNumber) == year.incomesPerMonth.get(monthNumber).amount) {
+                    System.out.println("Месяц: " + monthNumber + ". Сверка доходов успешно завершена.");
+                } else {
+                    System.out.println("Меясц: " + monthNumber + ". Сверка доходов завершена с ошибкой.");
                 }
             }
-            months.expensesPerMonth.put(monthNumber, expense);
-            months.incomesPerMonth.put(monthNumber, income);
+        } catch (NullPointerException exception) {
+            System.out.println("Ошибка, ещё не считаны все мясячные или годовой отчёт. Считайте их и попробуйте " +
+                    "сделать сверку ещё раз.");
         }
     }
 
@@ -99,7 +94,7 @@ public class ReportManager {
             String nameIncomeTitle = null;
             for (Integer monthNumber : months.mapOfMonths.keySet()) {
                 System.out.println("Месяц: " + monthNumber + ":");
-                for (DataInMonthLine value : months.mapOfMonths.get(monthNumber)) {
+                for (MonthLine value : months.mapOfMonths.get(monthNumber)) {
                     maxExpenseProduct = value.price * value.quantity;
                     if (maxExpenseProduct > maxExpense && value.isExpense) {
                         maxExpense = maxExpenseProduct;
@@ -111,7 +106,8 @@ public class ReportManager {
                 }
                 System.out.println("Наибольший доход: " + maxIncome + " руб. Название строки: " + nameIncomeTitle +
                         ".");
-                System.out.println("Наибольшая трата: " + maxExpense + " руб. Название строки: " + nameExpenseTitle + ".");
+                System.out.println("Наибольший расход: " + maxExpense + " руб. Название строки: " + nameExpenseTitle +
+                        ".");
                 maxIncome = 0;
                 maxExpense = 0;
                 nameExpenseTitle = null;
@@ -122,13 +118,40 @@ public class ReportManager {
         }
     }
 
-    public void printStaticYearReport() {
+    public void printYearReport() {
         System.out.println("Печать отчёта за 2021 год запущена.");
         try {
             yearProfit();
             averageExpensesAndIncomeForYear();
         } catch (NullPointerException exception) {
             System.out.println("Ошибка, не получается вывести статистику по годовому отчёту.");
+        }
+    }
+
+    public void setExpensesAndIncomePerYear() {
+        for (YearLine months : year.dataInYear) {
+            int index = months.month;
+            if (months.isExpense) {
+                year.expensesPerMonth.put(index, months);
+            } else {
+                year.incomesPerMonth.put(index, months);
+            }
+        }
+    }
+
+    public void getExpensesAndIncomePerMonth() {
+        for (Integer monthNumber : months.mapOfMonths.keySet()) {
+            int expense = 0;
+            int income = 0;
+            for (MonthLine expenses : months.mapOfMonths.get(monthNumber)) {
+                if (expenses.isExpense) {
+                    expense += expenses.quantity * expenses.price;
+                } else {
+                    income += expenses.quantity * expenses.price;
+                }
+            }
+            months.expensesPerMonth.put(monthNumber, expense);
+            months.incomesPerMonth.put(monthNumber, income);
         }
     }
 
@@ -153,28 +176,6 @@ public class ReportManager {
         }
         System.out.println("Средний расход за все месяцы 2021 года: " + sumExpenses / monthCount + " руб.");
         System.out.println("Средний доход за все месяцы 2021 года: " + sumIncome / monthCount + " руб.");
-    }
-
-    public void compareReports() {
-        getExpensesAndIncomePerMonth();
-        System.out.println("Запущена сверка месячных и годового отчёта.");
-        try {
-            for (int monthNumber = 1; monthNumber < 4; monthNumber++) {
-                if (months.expensesPerMonth.get(monthNumber) == year.expensesPerMonth.get(monthNumber).amount) {
-                    System.out.println("Месяц: " + monthNumber + ". Сверка расходов успешно завершена.");
-                } else {
-                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в расходах.");
-                }
-                if (months.incomesPerMonth.get(monthNumber) == year.incomesPerMonth.get(monthNumber).amount) {
-                    System.out.println("Месяц: " + monthNumber + ". Сверка доходов успешно завершена.");
-                } else {
-                    System.out.println("В месяце " + monthNumber + " обнаружено несоответствие в доходах.");
-                }
-            }
-        } catch (NullPointerException exception) {
-            System.out.println("Ошибка, ещё не считаны все мясячные или годовой отчёт. Считайте их и попробуйте " +
-                    "сделать сверку ещё раз.");
-        }
     }
 
     protected String readFileContentsOrNull(String path) {
