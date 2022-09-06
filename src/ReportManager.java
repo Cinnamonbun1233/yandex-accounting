@@ -123,7 +123,7 @@ public class ReportManager {
     }
 
     public void printStaticYearReport() {
-        System.out.println("Печать годового отчёта запущена.");
+        System.out.println("Печать отчёта за 2021 год запущена.");
         try {
             yearProfit();
             averageExpensesAndIncomeForYear();
@@ -151,8 +151,8 @@ public class ReportManager {
             sumExpenses += year.expensesPerMonth.get(monthNumber).amount;
             sumIncome += year.incomesPerMonth.get(monthNumber).amount;
         }
-        System.out.println("Средний расход за все месяца 2021 года: " + sumExpenses / monthCount + " руб.");
-        System.out.println("Средний доход за все месяца 2021 года: " + sumIncome / monthCount + " руб.");
+        System.out.println("Средний расход за все месяцы 2021 года: " + sumExpenses / monthCount + " руб.");
+        System.out.println("Средний доход за все месяцы 2021 года: " + sumIncome / monthCount + " руб.");
     }
 
     public void compareReports() {
